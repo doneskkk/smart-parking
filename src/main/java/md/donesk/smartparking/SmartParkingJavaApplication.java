@@ -1,0 +1,13 @@
+package md.donesk.smartparking;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SmartParkingJavaApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SmartParkingJavaApplication.class, args);
+    }
+
+}
