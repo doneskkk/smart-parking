@@ -25,7 +25,7 @@ RESTful web service built with Spring Boot allows users to manage parking spots 
 
 - **Java JDK 17** or higher installed on your machine.
 - **MySQL Server** up and running.
-- **Maven** for building the project.
+- **Gradle** for building the project.
 
 ### Installation
 
