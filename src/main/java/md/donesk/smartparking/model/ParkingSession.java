@@ -21,11 +21,12 @@ public class ParkingSession {
     @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
 
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "end_time")
     private LocalDateTime endTime;
 
     @Column(name = "parking_zone", nullable = false)
-    private String parkingZone;
+    @Enumerated(EnumType.STRING)
+    private ParkingZone parkingZone;
 
     @Column(name = "cost")
     private Double cost;

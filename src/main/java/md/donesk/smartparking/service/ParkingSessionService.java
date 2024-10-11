@@ -2,11 +2,14 @@ package md.donesk.smartparking.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import md.donesk.smartparking.model.ParkingSession;
+import md.donesk.smartparking.model.ParkingZone;
 import md.donesk.smartparking.repository.ParkingSessionRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 public class ParkingSessionService {
@@ -21,8 +24,7 @@ public class ParkingSessionService {
         ParkingSession session = new ParkingSession();
         session.setLicensePlate(licensePlate);
         session.setStartTime(LocalDateTime.now());
-        session.setParkingZone(parkingZone);
-        // логика для расчета стоимости парковки по зоне
+        session.setParkingZone(ParkingZone.valueOf(parkingZone));
         return parkingSessionRepository.save(session);
     }
 
@@ -30,7 +32,7 @@ public class ParkingSessionService {
         ParkingSession session = parkingSessionRepository.findById(sessionId)
                 .orElseThrow(() -> new EntityNotFoundException("Session not found"));
         session.setEndTime(LocalDateTime.now());
-        session.setCost(calculateCost(session.getStartTime(), session.getEndTime(), session.getParkingZone()));
+        session.setCost(calculateCost(session.getStartTime(), session.getEndTime(), String.valueOf(session.getParkingZone())));
         return parkingSessionRepository.save(session);
     }
 
@@ -41,7 +43,16 @@ public class ParkingSessionService {
     }
 
     private double getRateForZone(String zone) {
-        // логика для получения тарифа зоны
-        return 2.0; // например, 2 единицы за минуту
+        double rate = switch (zone) {
+            case "ZONE1" -> 5.0;
+            case "ZONE2" -> 10.0;
+            case "ZONE3" -> 20.0;
+            default -> 0;
+        };
+        return rate;
+    }
+
+    public List<ParkingSession> getParkingSessions() {
+        return parkingSessionRepository.findAll();
     }
 }
