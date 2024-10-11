@@ -32,4 +32,4 @@ RESTful web service built with Spring Boot allows users to manage parking spots 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/parking-spot-management-api.git
+   git clone https://github.com/doneskkk/smart-parking.git
