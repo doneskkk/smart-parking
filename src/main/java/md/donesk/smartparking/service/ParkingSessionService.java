@@ -1,6 +1,7 @@
 package md.donesk.smartparking.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import md.donesk.smartparking.exception.ParkingSessionNotFoundException;
 import md.donesk.smartparking.model.ParkingSession;
 import md.donesk.smartparking.model.ParkingZone;
 import md.donesk.smartparking.repository.ParkingSessionRepository;
@@ -30,7 +31,7 @@ public class ParkingSessionService {
 
     public ParkingSession endParking(Long sessionId) {
         ParkingSession session = parkingSessionRepository.findById(sessionId)
-                .orElseThrow(() -> new EntityNotFoundException("Session not found"));
+                .orElseThrow(() -> new ParkingSessionNotFoundException("Session with id " + sessionId + " not found"));
         session.setEndTime(LocalDateTime.now());
         session.setCost(calculateCost(session.getStartTime(), session.getEndTime(), String.valueOf(session.getParkingZone())));
         return parkingSessionRepository.save(session);
@@ -43,13 +44,12 @@ public class ParkingSessionService {
     }
 
     private double getRateForZone(String zone) {
-        double rate = switch (zone) {
+        return switch (zone) {
             case "ZONE1" -> 5.0;
             case "ZONE2" -> 10.0;
             case "ZONE3" -> 20.0;
             default -> 0;
         };
-        return rate;
     }
 
     public List<ParkingSession> getParkingSessions() {
