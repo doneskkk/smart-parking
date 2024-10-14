@@ -31,8 +31,13 @@ public class ParkingSession {
     @Column(name = "cost")
     private Double cost;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
     @Transient
     private Long currentDuration;
+
 
 
 }
