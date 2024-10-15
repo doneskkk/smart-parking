@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -84,14 +85,16 @@ public class AuthController {
                 signUpRequest.getPhone());
 
         Set<Role> roles = new HashSet<>();
-        Role userRole = roleRepo.findByName(ERole.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        Optional<Role> userRole = roleRepo.findByName(ERole.ROLE_USER);
 
-        roles.add(userRole);
+        if(userRole.isPresent()) {
+            roles.add(userRole.get());
 
-        user.setRoles(roles);
-        userRepo.save(user);
-
+            user.setRoles(roles);
+            userRepo.save(user);
+        }else {
+            throw new RuntimeException("Role not found: ROLE_USER");
+        }
         return ResponseEntity.ok("User registered successfully!");
     }
 
