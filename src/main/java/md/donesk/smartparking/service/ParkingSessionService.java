@@ -4,8 +4,11 @@ import jakarta.persistence.EntityNotFoundException;
 import md.donesk.smartparking.exception.ParkingSessionNotFoundException;
 import md.donesk.smartparking.model.ParkingSession;
 import md.donesk.smartparking.model.ParkingZone;
+import md.donesk.smartparking.model.User;
 import md.donesk.smartparking.repository.ParkingSessionRepository;
+import md.donesk.smartparking.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,14 +19,19 @@ import java.util.List;
 public class ParkingSessionService {
 
     private final ParkingSessionRepository parkingSessionRepository;
+    private final UserRepository userRepo;
 
-    public ParkingSessionService(ParkingSessionRepository parkingSessionRepository) {
+    public ParkingSessionService(ParkingSessionRepository parkingSessionRepository, UserRepository userRepo) {
         this.parkingSessionRepository = parkingSessionRepository;
+        this.userRepo = userRepo;
     }
 
-    public ParkingSession startParking(String licensePlate, String parkingZone) {
+    public ParkingSession startParking(String licensePlate, String parkingZone, Authentication authentication) {
+        System.out.println("Authenticated user: "+ authentication.getName());
+        User authenticatedUser = userRepo.findByUsername(authentication.getName()).get();
         ParkingSession session = new ParkingSession();
         session.setLicensePlate(licensePlate);
+        session.setUser(authenticatedUser);
         session.setStartTime(LocalDateTime.now());
         session.setParkingZone(ParkingZone.valueOf(parkingZone));
         return parkingSessionRepository.save(session);

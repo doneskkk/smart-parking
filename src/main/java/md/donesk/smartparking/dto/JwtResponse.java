@@ -1,15 +1,24 @@
 package md.donesk.smartparking.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+
 import java.util.List;
 
 public class JwtResponse {
     private String token;
     private String type = "Bearer";
+    @Getter
+    @Setter
     private Long id;
+    @Getter
+    @Setter
     private String email;
-    private final List<String> roles;
+    @Getter
+    private final List<? extends GrantedAuthority> roles;
 
-    public JwtResponse(String accessToken, Long id, String email, List<String> roles) {
+    public JwtResponse(String accessToken, Long id, String email, List<? extends GrantedAuthority> roles) {
         this.token = accessToken;
         this.id = id;
         this.email = email;
@@ -32,23 +41,4 @@ public class JwtResponse {
         this.type = tokenType;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
 }

@@ -38,6 +38,13 @@ public class ParkingSession {
     @Transient
     private Long currentDuration;
 
+    public Long getCurrentDuration() {
+        if (this.startTime != null && this.endTime != null) {
+            return java.time.Duration.between(startTime, endTime).toMinutes();
+        }
+        return null; // or calculate it if only startTime is available
+    }
+
 
 
 }

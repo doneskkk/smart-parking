@@ -23,9 +23,11 @@ public class User {
     private String phone;
 
     @CreatedDate
+    @Column(name = "created_at", updatable = false)
     private Date createdAt;
 
     @LastModifiedDate
+    @Column(name = "updated_at")
     private Date updatedAt;
 
     @ManyToMany(fetch = FetchType.LAZY)
