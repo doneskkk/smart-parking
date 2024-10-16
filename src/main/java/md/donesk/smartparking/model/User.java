@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "users")
+@EntityListeners(AuditingEntityListener.class) // Important for enabling auditing
 public class User {
 
     @Id
@@ -23,11 +25,11 @@ public class User {
     private String phone;
 
     @CreatedDate
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at",updatable = false)
     private Date createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at")
+    @Column(name = "updated_at" )
     private Date updatedAt;
 
     @ManyToMany(fetch = FetchType.LAZY)
