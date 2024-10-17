@@ -29,10 +29,8 @@ public class ParkingSessionService {
 
     public StartParkingResponse startParking(String licensePlate, String parkingZone, Authentication authentication) {
 
-        // Get user details from the authentication
 
         User authenticatedUser = userRepo.findByUsername(authentication.getName()).get();
-        // Call the repository to start the parking session
         ParkingSession parkingSession = parkingSessionRepository.save(ParkingSession.builder()
                 .licensePlate(licensePlate)
                 .parkingZone(ParkingZone.valueOf(parkingZone)).user(authenticatedUser)
@@ -40,8 +38,7 @@ public class ParkingSessionService {
                 .build());
 
         parkingSessionRepository.save(parkingSession);
-
-        // Build and return the StartParkingResponse
+//test git push
         return StartParkingResponse.builder()
                 .id(parkingSession.getId())
                 .cost(parkingSession.getCost())
