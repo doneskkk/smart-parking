@@ -11,4 +11,5 @@ public class ParkingSessionRequest {
 
     @NotBlank(message = "Please choose the parking zone")
     private String parkingZone;
+
 }

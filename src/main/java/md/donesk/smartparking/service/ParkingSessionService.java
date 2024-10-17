@@ -1,19 +1,20 @@
 package md.donesk.smartparking.service;
 
-import jakarta.persistence.EntityNotFoundException;
+import md.donesk.smartparking.dto.StartParkingResponse;
+import md.donesk.smartparking.dto.UserResponse;
 import md.donesk.smartparking.exception.ParkingSessionNotFoundException;
 import md.donesk.smartparking.model.ParkingSession;
 import md.donesk.smartparking.model.ParkingZone;
 import md.donesk.smartparking.model.User;
 import md.donesk.smartparking.repository.ParkingSessionRepository;
 import md.donesk.smartparking.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ParkingSessionService {
@@ -26,16 +27,36 @@ public class ParkingSessionService {
         this.userRepo = userRepo;
     }
 
-    public ParkingSession startParking(String licensePlate, String parkingZone, Authentication authentication) {
-        System.out.println("Authenticated user: "+ authentication.getName());
+    public StartParkingResponse startParking(String licensePlate, String parkingZone, Authentication authentication) {
+
+        // Get user details from the authentication
+
         User authenticatedUser = userRepo.findByUsername(authentication.getName()).get();
-        ParkingSession session = new ParkingSession();
-        session.setLicensePlate(licensePlate);
-        session.setUser(authenticatedUser);
-        session.setStartTime(LocalDateTime.now());
-        session.setParkingZone(ParkingZone.valueOf(parkingZone));
-        return parkingSessionRepository.save(session);
+        // Call the repository to start the parking session
+        ParkingSession parkingSession = parkingSessionRepository.save(ParkingSession.builder()
+                .licensePlate(licensePlate)
+                .parkingZone(ParkingZone.valueOf(parkingZone)).user(authenticatedUser)
+                .startTime(LocalDateTime.now())
+                .build());
+
+        parkingSessionRepository.save(parkingSession);
+
+        // Build and return the StartParkingResponse
+        return StartParkingResponse.builder()
+                .id(parkingSession.getId())
+                .cost(parkingSession.getCost())
+                .licensePlate(parkingSession.getLicensePlate())
+                .parkingZone(parkingSession.getParkingZone())
+                .startTime(parkingSession.getStartTime())
+                .endTime(parkingSession.getEndTime())
+                .user(UserResponse.builder().id(authenticatedUser.getId())
+                        .email(authenticatedUser.getEmail())
+                        .phone(authenticatedUser.getPhone())
+                        .name(authenticatedUser.getName())
+                        .build())
+                .build();
     }
+
 
     public ParkingSession endParking(Long sessionId) {
         ParkingSession session = parkingSessionRepository.findById(sessionId)
@@ -60,7 +81,20 @@ public class ParkingSessionService {
         };
     }
 
-    public List<ParkingSession> getParkingSessions() {
-        return parkingSessionRepository.findAll();
+    public List<StartParkingResponse> getParkingSessions() {
+
+        List<ParkingSession> parkingSessions = parkingSessionRepository.findAll();
+
+        return parkingSessions.stream()
+                .map(session -> StartParkingResponse.builder()
+                        .id(session.getId())
+                                .cost(session.getCost())
+                        .licensePlate(session.getLicensePlate())
+                        .startTime(session.getStartTime())
+                        .endTime(session.getEndTime())
+                        .parkingZone(session.getParkingZone())
+                        .user(UserResponse.convertToUserResponse(session.getUser()))
+                        .build()
+                        ).collect(Collectors.toList());
     }
 }

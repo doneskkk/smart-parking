@@ -2,13 +2,19 @@ package md.donesk.smartparking.model;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "t_parking_session")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ParkingSession {
 
     @Id
@@ -42,7 +48,7 @@ public class ParkingSession {
         if (this.startTime != null && this.endTime != null) {
             return java.time.Duration.between(startTime, endTime).toMinutes();
         }
-        return null; // or calculate it if only startTime is available
+        return null;
     }
 
 

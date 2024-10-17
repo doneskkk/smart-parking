@@ -3,8 +3,7 @@ package md.donesk.smartparking.controller;
 import jakarta.validation.Valid;
 import md.donesk.smartparking.dto.EndParkingRequest;
 import md.donesk.smartparking.dto.ParkingSessionRequest;
-import md.donesk.smartparking.model.ParkingSession;
-import md.donesk.smartparking.model.ParkingZone;
+import md.donesk.smartparking.dto.StartParkingResponse;
 import md.donesk.smartparking.service.ParkingSessionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +26,15 @@ public class ParkingSessionController {
     }
 
     @PostMapping("/start")
-    public ResponseEntity<ParkingSession> startParking(@Valid @RequestBody ParkingSessionRequest parkingSessionRequest, Authentication authentication) {
+    public ResponseEntity<StartParkingResponse> startParking(@Valid @RequestBody ParkingSessionRequest parkingSessionRequest, Authentication authentication) {
 
-       ParkingSession parkingSession =  parkingSessionService.startParking(parkingSessionRequest.getLicensePlate(), parkingSessionRequest.getParkingZone(), authentication);
-       return ResponseEntity.ok(parkingSession);
+        // Call the service layer to handle the parking start logic
+        StartParkingResponse startParkingResponse = parkingSessionService.startParking(parkingSessionRequest.getLicensePlate(), parkingSessionRequest.getParkingZone(), authentication);
+
+        // Return the response
+        return ResponseEntity.ok(startParkingResponse);
     }
+
 
     @PostMapping("/end")
     public ResponseEntity<String> endParking(@Valid @RequestBody EndParkingRequest endParkingRequest) {
@@ -40,7 +43,7 @@ public class ParkingSessionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ParkingSession>> getParkingSessions() {
+    public ResponseEntity<List<StartParkingResponse>> getParkingSessions() {
         return new ResponseEntity<>(parkingSessionService.getParkingSessions(), HttpStatus.OK);
     }
 
