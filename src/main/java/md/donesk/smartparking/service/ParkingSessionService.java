@@ -57,11 +57,20 @@ public class ParkingSessionService {
     }
 
 
-    public Duration getCurrentDuration(Long sessionId) {
+    public String getCurrentDuration(Long sessionId) {
+
         ParkingSession parkingSession = parkingSessionRepository.findById(sessionId)
                 .orElseThrow(() -> new ParkingSessionNotFoundException("Session with id " + sessionId + " not found"));
 
-        return Duration.between(parkingSession.getStartTime(), LocalDateTime.now());
+        if(parkingSession.getEndTime() == null) {
+        Duration duration = Duration.between(parkingSession.getStartTime(), LocalDateTime.now());
+        long hours = duration.toHours();
+        long minutes = duration.toMinutesPart();
+        long seconds = duration.toSecondsPart();
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);}
+        else {
+            return "Session is already finished";
+        }
 
     }
     public void endParking(Long sessionId) {

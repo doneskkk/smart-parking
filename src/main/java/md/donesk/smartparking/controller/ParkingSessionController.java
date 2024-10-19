@@ -47,7 +47,7 @@ public class ParkingSessionController {
     }
 
     @GetMapping("/duration/{sessionId}")
-    public ResponseEntity<Duration> getCurrentDuration(@PathVariable Long sessionId) {
+    public ResponseEntity<String> getCurrentDuration(@PathVariable Long sessionId) {
         return new ResponseEntity<>(parkingSessionService.getCurrentDuration(sessionId), HttpStatus.OK);
     }
 
