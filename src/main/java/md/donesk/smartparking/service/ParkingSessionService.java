@@ -2,6 +2,7 @@ package md.donesk.smartparking.service;
 
 import md.donesk.smartparking.dto.StartParkingResponse;
 import md.donesk.smartparking.dto.UserResponse;
+import md.donesk.smartparking.enums.Sectors;
 import md.donesk.smartparking.exception.ParkingSessionNotFoundException;
 import md.donesk.smartparking.model.ParkingSession;
 import md.donesk.smartparking.model.ParkingZone;
@@ -70,12 +71,11 @@ public class ParkingSessionService {
     }
 
     private double getRateForZone(String zone) {
-        return switch (zone) {
-            case "ZONE1" -> 5.0;
-            case "ZONE2" -> 10.0;
-            case "ZONE3" -> 20.0;
-            default -> 0;
-        };
+     try {
+         return Sectors.valueOf(zone).getPrice();
+     } catch (IllegalArgumentException e) {
+         return 0;
+     }
     }
 
     public List<StartParkingResponse> getParkingSessions() {

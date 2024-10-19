@@ -1,6 +1,15 @@
 package md.donesk.smartparking.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum Sectors {
-    //test git fetch
-    ZONE1, ZONE2, ZONE3;
+    ZONE1(5.0), ZONE2(10.0), ZONE3(15.0);
+
+    private final double price;
+
+    Sectors(double price) {
+        this.price = price;
+    }
+
 }
