@@ -56,12 +56,12 @@ public class ParkingSessionService {
     }
 
 
-    public ParkingSession endParking(Long sessionId) {
+    public void endParking(Long sessionId) {
         ParkingSession session = parkingSessionRepository.findById(sessionId)
                 .orElseThrow(() -> new ParkingSessionNotFoundException("Session with id " + sessionId + " not found"));
         session.setEndTime(LocalDateTime.now());
         session.setCost(calculateCost(session.getStartTime(), session.getEndTime(), String.valueOf(session.getParkingZone())));
-        return parkingSessionRepository.save(session);
+        parkingSessionRepository.save(session);
     }
 
     private Double calculateCost(LocalDateTime start, LocalDateTime end, String zone) {
