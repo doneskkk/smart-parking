@@ -12,6 +12,7 @@ import md.donesk.smartparking.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -56,6 +57,13 @@ public class ParkingSessionService {
     }
 
 
+    public Duration getCurrentDuration(Long sessionId) {
+        ParkingSession parkingSession = parkingSessionRepository.findById(sessionId)
+                .orElseThrow(() -> new ParkingSessionNotFoundException("Session with id " + sessionId + " not found"));
+
+        return Duration.between(parkingSession.getStartTime(), LocalDateTime.now());
+
+    }
     public void endParking(Long sessionId) {
         ParkingSession session = parkingSessionRepository.findById(sessionId)
                 .orElseThrow(() -> new ParkingSessionNotFoundException("Session with id " + sessionId + " not found"));

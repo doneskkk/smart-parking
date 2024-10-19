@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.util.List;
 
 @CrossOrigin("*")
@@ -28,10 +29,8 @@ public class ParkingSessionController {
     @PostMapping("/start")
     public ResponseEntity<StartParkingResponse> startParking(@Valid @RequestBody ParkingSessionRequest parkingSessionRequest, Authentication authentication) {
 
-        // Call the service layer to handle the parking start logic
         StartParkingResponse startParkingResponse = parkingSessionService.startParking(parkingSessionRequest.getLicensePlate(), parkingSessionRequest.getParkingZone(), authentication);
 
-        // Return the response
         return ResponseEntity.ok(startParkingResponse);
     }
 
@@ -45,6 +44,11 @@ public class ParkingSessionController {
     @GetMapping
     public ResponseEntity<List<StartParkingResponse>> getParkingSessions() {
         return new ResponseEntity<>(parkingSessionService.getParkingSessions(), HttpStatus.OK);
+    }
+
+    @GetMapping("/duration/{sessionId}")
+    public ResponseEntity<Duration> getCurrentDuration(@PathVariable Long sessionId) {
+        return new ResponseEntity<>(parkingSessionService.getCurrentDuration(sessionId), HttpStatus.OK);
     }
 
 
