@@ -5,13 +5,13 @@ import md.donesk.smartparking.dto.EndParkingRequest;
 import md.donesk.smartparking.dto.ParkingSessionRequest;
 import md.donesk.smartparking.dto.StartParkingResponse;
 import md.donesk.smartparking.service.ParkingSessionService;
+import md.donesk.smartparking.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Duration;
 import java.util.List;
 
 @CrossOrigin("*")
@@ -20,10 +20,12 @@ import java.util.List;
 @Validated
 public class ParkingSessionController {
     private final ParkingSessionService parkingSessionService;
+    private final UserService userService;
 
 
-    public ParkingSessionController(ParkingSessionService parkingSessionService) {
+    public ParkingSessionController(ParkingSessionService parkingSessionService, UserService userService) {
         this.parkingSessionService = parkingSessionService;
+        this.userService = userService;
     }
 
     @PostMapping("/start")
@@ -50,6 +52,12 @@ public class ParkingSessionController {
     public ResponseEntity<String> getCurrentDuration(@PathVariable Long sessionId) {
         return new ResponseEntity<>(parkingSessionService.getCurrentDuration(sessionId), HttpStatus.OK);
     }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<StartParkingResponse>> getParkingSessionByUser(Authentication authentication) {
+        return new ResponseEntity<>(userService.getParkingSessionByUser(authentication), HttpStatus.OK);
+    }
+
 
 
 }

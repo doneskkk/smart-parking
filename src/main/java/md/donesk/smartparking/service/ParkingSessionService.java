@@ -97,8 +97,7 @@ public class ParkingSessionService {
 
     public List<StartParkingResponse> getParkingSessions() {
 
-        List<ParkingSession> parkingSessions = parkingSessionRepository.findAll();
-
+        List<ParkingSession> parkingSessions = parkingSessionRepository.findAllWithUsers();
         return parkingSessions.stream()
                 .map(session -> StartParkingResponse.builder()
                         .id(session.getId())
