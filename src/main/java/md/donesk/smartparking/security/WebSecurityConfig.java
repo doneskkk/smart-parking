@@ -1,5 +1,6 @@
 package md.donesk.smartparking.security;
 
+import md.donesk.smartparking.config.CorsConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -62,7 +63,6 @@ public class WebSecurityConfig {
                 );
 
         http.authenticationProvider(authenticationProvider());
-
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -75,4 +75,10 @@ public class WebSecurityConfig {
             "/swagger-ui/**",
             "/swagger-ui.html"
     };
+
+
+    @Bean
+    public CorsConfig corsConfig() {
+        return new CorsConfig(); // Include your CORS config
+    }
 }
